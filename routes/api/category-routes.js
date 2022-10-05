@@ -1,23 +1,38 @@
 const router = require("express").Router();
+const { reject } = require("bcrypt/promises");
 const { Category, Product } = require("../../models");
 
 // The `/api/categories` endpoint
 
 // find all categories
-router.get("/", (req, res) => {
-  res.send(categories);
+router.get("/", async (req, res) => {
+  const categoryData = await Category.findAll({});
+  res.json(categoryData);
 });
 // be sure to include its associated Products
 
 // find one category by its `id` value
-router.get("/:id", (req, res) => {
-  let category = categories.find((category) => category.id === req.params.id);
-  res.send(category);
+router.get("/:id", async (req, res) => {
+  const category = await Category.findOne({ where: { id: req.params.id } });
+  res.json(category);
 });
+
+// ModelName.findOne({
+//   // Optional options
+//   // Filtering results using where
+//   where: { firstColumn: "value" },
+//   // Returning only specified columns
+//   attributes: ["firstColumn", "secondColumn"],
+// }).then((foundResult) => {});
+
 // be sure to include its associated Products
 
-router.post("/", (req, res) => {
+router.post("/", async ({ body: { category_name } }, res) => {
   // create a new category
+  const newCategory = await Category.create({
+    category_name,
+  });
+  res.json(newCategory);
 });
 
 router.put("/:id", (req, res) => {
