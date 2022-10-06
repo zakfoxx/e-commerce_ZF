@@ -37,10 +37,22 @@ router.post("/", async ({ body: { category_name } }, res) => {
 
 router.put("/:id", (req, res) => {
   // update a category by its `id` value
+  const updateCategory = Category.update(req.body, {
+    where: { id: req.params.id },
+  }).then((result) => {
+    const category = Category.findOne({ where: { id: req.params.id } }).then(
+      (results) => {
+        res.json(results);
+      }
+    );
+  });
 });
 
 router.delete("/:id", (req, res) => {
   // delete a category by its `id` value
+  Category.destroy({ where: { id: req.params.id } }).then((results) => {
+    res.json(results);
+  });
 });
 
 module.exports = router;
